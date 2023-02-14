@@ -15,25 +15,152 @@ import { forwardRef } from "preact/compat"
 
 function App() {
   const [breakScreen] = useCurrentBreakScreen()
+  const [lastScreen, setLastScreen] = useState("all")
+  const refs = useRef(new Map())
+  const getVisible = (screen) =>
+    ({
+      brb: [
+        [refs.current.get("screen-brb")],
+        [
+          refs.current.get("img"),
+          refs.current.get("flavor"),
+          refs.current.get("comms"),
+          refs.current.get("social"),
+        ],
+      ],
+      maplist: [
+        [refs.current.get("screen-rest"), refs.current.get("screen-rest-maps")],
+        [
+          refs.current.get("scoreboard"),
+          ".maplist-game",
+          refs.current.get("icon"),
+        ],
+      ],
+      rosters: [
+        [
+          refs.current.get("screen-rest"),
+          refs.current.get("screen-rest-roster"),
+        ],
+        [
+          refs.current.get("scoreboard"),
+          refs.current.get("roster"),
+          refs.current.get("icon"),
+        ],
+      ],
+      all: [
+        [
+          refs.current.get("screen-brb"),
+          refs.current.get("screen-rest"),
+          refs.current.get("screen-rest-maps"),
+          refs.current.get("screen-rest-roster"),
+        ],
+        [
+          refs.current.get("img"),
+          refs.current.get("flavor"),
+          refs.current.get("comms"),
+          refs.current.get("social"),
+          refs.current.get("scoreboard"),
+          ".maplist-game",
+          refs.current.get("roster"),
+          refs.current.get("icon"),
+        ],
+      ],
+    }[screen])
+
+  useEffect(() => {
+    const nowVisible = getVisible(breakScreen)
+    const lastVisible = getVisible(lastScreen)
+    const shide = lastVisible[0].filter((x) => !nowVisible[0].includes(x))
+    const sshow = nowVisible[0].filter((x) => !lastVisible[0].includes(x))
+    const ahide = lastVisible[1].filter((x) => !nowVisible[1].includes(x))
+    const ashow = nowVisible[1].filter((x) => !lastVisible[1].includes(x))
+    setLastScreen(breakScreen)
+
+    anime({
+      duration: 400,
+      easing: "easeInOutExpo",
+      delay: anime.stagger(60),
+      targets: ahide,
+      opacity: 0,
+      scale: 0.9,
+      complete: () => {
+        shide.forEach((el) => (el.style.display = "none"))
+        sshow.forEach((el) => (el.style.display = ""))
+        anime({
+          duration: 400,
+          easing: "easeInOutExpo",
+          delay: anime.stagger(60),
+          targets: ashow,
+          opacity: 1,
+          scale: 1,
+        })
+      },
+    })
+  }, [breakScreen])
+
   return (
     <div
       class="p-12 flex bg-otd-slate h-screen w-screen items-stretch text-4xl font-medium bg-center"
       style={{ backgroundImage: `url('${background}')` }}
     >
-      <ScreenBRB breakScreen={breakScreen} />
-      <ScreenRest />
-    </div>
-  )
-}
-
-const ScreenRest = ({}) => {
-  return (
-    <div class="flex flex-col items-center w-full gap-8 justify-between">
-      <div class="flex1">
-        <Scoreboard />
+      <div
+        class="flex flex-col items-center w-full gap-8 justify-center"
+        ref={(el) => refs.current.set("screen-brb", el)}
+      >
+        <div
+          class="relative max-w-md w-full mb-24"
+          ref={(el) => refs.current.set("img", el)}
+        >
+          <img
+            src="https://assets.otd.ink/idtga/logo-nobg.svg"
+            style="absolute inset-0"
+          />
+        </div>
+        <div ref={(el) => refs.current.set("flavor", el)}>
+          <TextSquare>
+            <FlavorText />
+          </TextSquare>
+        </div>
+        <div ref={(el) => refs.current.set("comms", el)}>
+          <TextSquare
+            icon={
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="w-10 h-10"
+              >
+                <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
+                <path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
+              </svg>
+            }
+          >
+            <Comm />
+          </TextSquare>
+        </div>
+        <div ref={(el) => refs.current.set("social", el)}>
+          <Social />
+        </div>
       </div>
-      <Maps />
-      <div class="flex1"></div>
+      <div
+        class="flex flex-col items-center w-full gap-8 justify-between"
+        ref={(el) => refs.current.set("screen-rest", el)}
+      >
+        <div class="flex1" ref={(el) => refs.current.set("scoreboard", el)}>
+          <Scoreboard />
+        </div>
+        <div ref={(el) => refs.current.set("screen-rest-maps", el)}>
+          <Maps />
+        </div>
+        <div ref={(el) => refs.current.set("screen-rest-roster", el)}>
+          <div
+            class="bg-white rounded-lg p-20"
+            ref={(el) => refs.current.set("roster", el)}
+          />
+          {/* <Roster /> */}
+        </div>
+        <div class="flex1" ref={(el) => refs.current.set("icon", el)}></div>
+      </div>
     </div>
   )
 }
@@ -76,9 +203,6 @@ const Scoreboard = () => {
   )
 }
 
-// Animate fade for images
-// Animate out entire thing if value length changes
-
 const getImg = (map) => {
   return maps.indexOf(map) >= 0
     ? `https://sendou.ink/static-assets/img/stages/${maps.indexOf(map)}.png`
@@ -119,7 +243,7 @@ const Maps = () => {
       class="flex text-3xl w-full gap-16 justify-center items-stretch"
     >
       {roundValue.map((game, i) => (
-        <div class="w-full max-w-[270px] ring-2 ring-otd-slate flex flex-col flex-1 rounded-lg text-white bg-otd-blue pr-3">
+        <div class="w-full max-w-[270px] ring-2 ring-otd-slate flex flex-col flex-1 rounded-lg text-white bg-otd-blue pr-3 maplist-game">
           <div class="w-full flex flex-col items-stretch grow rounded-lg bg-white text-black text-center">
             <div
               class="w-full h-96 rounded-t-lg bg-cover bg-center flex items-center justify-center bg-slate-800"
@@ -160,83 +284,14 @@ const Maps = () => {
   )
 }
 
-const ScreenBRB = ({ breakScreen }) => {
-  // transition
-  const ref = useRef()
-  const imgRef = useRef()
-  const flavorRef = useRef()
-  const commsRef = useRef()
-  const socialRef = useRef()
-
-  // text
+const FlavorText = () => {
   const [flavorText] = useCurrentFlavorText()
   const flavorTextRef = useRef()
 
-  useEffect(() => {
-    anime({
-      targets: [
-        imgRef.current,
-        flavorRef.current,
-        commsRef.current,
-        socialRef.current,
-      ],
-      duration: 400,
-      easing: "easeInOutExpo",
-      delay: anime.stagger(60),
-      opacity: breakScreen === "brb" ? 1 : 0,
-      scale: breakScreen === "brb" ? 1 : 0.9,
-      begin: () => {
-        if (breakScreen === "brb") {
-          ref.current.style.display = ""
-        }
-      },
-      complete: () => {
-        if (breakScreen !== "brb") {
-          ref.current.style.display = "none"
-        }
-      },
-    })
-  }, [breakScreen])
   return (
-    <div
-      ref={ref}
-      class="flex flex-col items-center w-full gap-8 justify-center"
-    >
-      <div class="relative max-w-md w-full mb-24">
-        <img
-          ref={imgRef}
-          src="https://assets.otd.ink/idtga/logo-nobg.svg"
-          style="absolute inset-0"
-        />
-      </div>
-      <div ref={flavorRef}>
-        <TextSquare>
-          <FadeText text={flavorText} ref={flavorTextRef}>
-            <p ref={flavorTextRef}></p>
-          </FadeText>
-        </TextSquare>
-      </div>
-      <div ref={commsRef}>
-        <TextSquare
-          icon={
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              class="w-10 h-10"
-            >
-              <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
-              <path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
-            </svg>
-          }
-        >
-          <Comm />
-        </TextSquare>
-      </div>
-      <div ref={socialRef}>
-        <Social />
-      </div>
-    </div>
+    <FadeText text={flavorText} ref={flavorTextRef}>
+      <p ref={flavorTextRef}></p>
+    </FadeText>
   )
 }
 
