@@ -276,7 +276,7 @@ const Maps = () => {
                 modeRefs.current.delete(i)
               }
             }}
-            class="p-3 text-center"
+            class="p-3 pl-6 text-center"
           ></p>
         </div>
       ))}
