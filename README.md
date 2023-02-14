@@ -5,7 +5,7 @@
 ![Stars][stars-shield]
 
 This is a NodeCG graphics bundle, make sure you have a working NodeCG installation.
-- This graphics bundle is controlled with [`cq-overlay-controls`](https://github.com/LeptoFlare/cq-overlay-controls).
+- This graphics bundle is controlled with [`cq-overlays/dashboard`](https://github.com/cq-overlays/dashboard).
 - This is a custom graphics bundle that I was commissioned for. If you'd like to commission your own, please see my [ko-fi](https://ko-fi.com/leptoflare) page.
 
 ## Installation

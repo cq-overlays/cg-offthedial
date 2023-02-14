@@ -1,7 +1,7 @@
 import { useEffect, useState } from "preact/compat"
 
 export const useCurrentBlock = () =>
-  useReplicant("cq-overlay-controls.currentBlock", {
+  useReplicant("cq-dashboard.currentBlock", {
     name: "Test Block",
     value: [
       { name: "Comm 1", twitter: "@Comm1", pronouns: "any" },
@@ -10,31 +10,31 @@ export const useCurrentBlock = () =>
   })
 
 export const useCurrentBreakScreen = () =>
-  useReplicant("cq-overlay-controls.currentBreakScreen", "brb")
+  useReplicant("cq-dashboard.currentBreakScreen", "brb")
 
 export const useCurrentColors = () =>
-  useReplicant("cq-overlay-controls.currentColors", ["#25B100", "#571DB1"])
+  useReplicant("cq-dashboard.currentColors", ["#25B100", "#571DB1"])
 
 export const useCurrentFlavorText = () =>
-  useReplicant("cq-overlay-controls.currentFlavorText", "Hello World!")
+  useReplicant("cq-dashboard.currentFlavorText", "Hello World!")
 
 export const useCurrentGameScreen = () =>
-  useReplicant("cq-overlay-controls.currentGameScreen", {
+  useReplicant("cq-dashboard.currentGameScreen", {
     showScores: true,
     showCommentators: true,
   })
 
 export const useCurrentMapWinners = () =>
-  useReplicant("cq-overlay-controls.currentMapWinners", [])
+  useReplicant("cq-dashboard.currentMapWinners", [])
 
 export const useCurrentMusic = () =>
-  useReplicant("cq-overlay-controls.currentMusic", {
-    song: "Farewell",
-    artist: "Lena Raine",
+  useReplicant("cq-dashboard.currentMusic", {
+    song: "Wave Prism",
+    artist: "Chirpy Chips",
   })
 
 export const useCurrentRound = () =>
-  useReplicant("cq-overlay-controls.currentRound", {
+  useReplicant("cq-dashboard.currentRound", {
     name: "Test Round",
     value: [
       {
@@ -53,10 +53,10 @@ export const useCurrentRound = () =>
   })
 
 export const useCurrentScores = () =>
-  useReplicant("cq-overlay-controls.currentScores", [0, 0])
+  useReplicant("cq-dashboard.currentScores", [0, 0])
 
 export const useCurrentTeams = () =>
-  useReplicant("cq-overlay-controls.currentTeams", [
+  useReplicant("cq-dashboard.currentTeams", [
     {
       name: "Team A",
       roster: ["Player A1", "Player A2", "Player A3", "Player A4"],
@@ -68,7 +68,7 @@ export const useCurrentTeams = () =>
   ])
 
 export const useLastFmData = () =>
-  useReplicant("cq-overlay-controls.lastFmData", {
+  useReplicant("cq-dashboard.lastFmData", {
     enabled: false,
     config: {
       username: null,
@@ -77,7 +77,7 @@ export const useLastFmData = () =>
   })
 
 export const useLoadedData = () =>
-  useReplicant("cq-overlay-controls.loadedData", {
+  useReplicant("cq-dashboard.loadedData", {
     rounds: {
       "Test Round": [
         { map: "Moray Towers", mode: "Clam Blitz" },
