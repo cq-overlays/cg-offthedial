@@ -77,7 +77,7 @@ const Name = ({ name }) => {
       })
   }, [name])
 
-  return <p ref={ref} class="leading-none truncate w-[15ch]"></p>
+  return <p ref={ref} class="truncate w-[15ch]"></p>
 }
 
 const Score = ({ score }) => {
@@ -101,7 +101,7 @@ const Score = ({ score }) => {
       })
   }, [score])
 
-  return <p ref={ref} class="leading-none font-mono"></p>
+  return <p ref={ref} class="font-mono"></p>
 }
 
 const Round = ({ round }) => {

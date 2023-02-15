@@ -5,6 +5,7 @@ import {
   useCurrentBlock,
   useCurrentBreakScreen,
   useCurrentFlavorText,
+  useCurrentMapWinners,
   useCurrentRound,
   useCurrentScores,
   useCurrentTeams,
@@ -153,11 +154,9 @@ function App() {
           <Maps />
         </div>
         <div ref={(el) => refs.current.set("screen-rest-roster", el)}>
-          <div
-            class="bg-white rounded-lg p-20"
-            ref={(el) => refs.current.set("roster", el)}
-          />
-          {/* <Roster /> */}
+          <div ref={(el) => refs.current.set("roster", el)}>
+            <Roster />
+          </div>
         </div>
         <div class="flex1" ref={(el) => refs.current.set("icon", el)}></div>
       </div>
@@ -179,23 +178,23 @@ const Scoreboard = () => {
         <FadeText animateWidth={false} text={teams[0].name} ref={teamA}>
           <p
             ref={teamA}
-            class="truncate rounded-md w-[20ch] text-right bg-white mb-2 px-3 py-2"
+            class="truncate rounded-md w-[17ch] text-right bg-white mb-2 px-3 py-2"
           ></p>
         </FadeText>
       </div>
-      <div class="flex items-center text-white px-6 py-2 mb-1 gap-24">
+      <div class="flex items-center text-white p-2 mb-1 gap-20">
         <FadeText animateWidth={false} text={scores[0]} ref={scoreA}>
-          <p ref={scoreA}></p>
+          <p class="w-12 text-center" ref={scoreA}></p>
         </FadeText>
         <FadeText animateWidth={false} text={scores[1]} ref={scoreB}>
-          <p ref={scoreB}></p>
+          <p class="w-12 text-center" ref={scoreB}></p>
         </FadeText>
       </div>
       <div class="flex-1 w-full rounded-md flex items-center bg-otd-blue">
         <FadeText animateWidth={false} text={teams[1].name} ref={teamB}>
           <p
             ref={teamB}
-            class="truncate rounded-md w-[20ch] bg-white mb-2 px-3 py-2"
+            class="truncate rounded-md w-[17ch] bg-white mb-2 px-3 py-2"
           ></p>
         </FadeText>
       </div>
@@ -209,9 +208,14 @@ const getImg = (map) => {
     : ""
 }
 
+const Roster = () => {
+  return <div class="bg-white rounded-lg p-20"></div>
+}
+
 const Maps = () => {
   // round
   const [round] = useCurrentRound()
+  const [mapWinners] = useCurrentMapWinners()
   const roundRef = useRef()
   const [roundValue, setRoundValue] = useState(round.value)
 
@@ -226,6 +230,37 @@ const Maps = () => {
     ],
     false
   )
+
+  const winnerRefs = useRef(new Map())
+  const winnerTextRefs = useRef(new Map())
+  useEffect(() => {
+    roundValue.forEach((v, i) => {
+      const text = mapWinners?.[i] ? mapWinners?.[i] : null
+      const divCurrent = winnerRefs.current.get(i)
+      const textCurrent = winnerTextRefs.current.get(i)
+      if (text !== textCurrent.innerText) {
+        anime
+          .timeline({
+            targets: divCurrent,
+            duration: 500,
+            easing: "easeInOutExpo",
+          })
+          .add({
+            opacity: 0,
+            complete: () => {
+              textCurrent.innerText = text
+            },
+          })
+          .add({
+            backdropFilter:
+              text === null
+                ? "brightness(1) saturate(1)"
+                : "brightness(0.33) saturate(0.33)",
+            opacity: 1,
+          })
+      }
+    })
+  }, [mapWinners])
 
   useEffect(() => {
     if (round.value.length !== roundValue.length) {
@@ -243,39 +278,47 @@ const Maps = () => {
       class="flex text-3xl w-full gap-16 justify-center items-stretch"
     >
       {roundValue.map((game, i) => (
-        <div class="w-full max-w-[270px] ring-2 ring-otd-slate flex flex-col flex-1 rounded-lg text-white bg-otd-blue pr-3 maplist-game">
-          <div class="w-full flex flex-col items-stretch grow rounded-lg bg-white text-black text-center">
+        <div class="w-64 ring-2 ring-otd-slate flex flex-col flex-1 rounded-lg text-white bg-otd-blue pr-3 maplist-game">
+          <div class="w-full flex flex-col items-stretch grow rounded-lg bg-white text-black">
             <div
-              class="w-full h-96 rounded-t-lg bg-cover bg-center flex items-center justify-center bg-slate-800"
+              class="relative overflow-hidden w-full h-96 rounded-t-lg bg-cover bg-center flex items-center justify-center bg-slate-800"
               style={{
                 backgroundImage: `url('${getImg(game.map)}')`,
               }}
             >
               {getImg(game.map).length === 0 && (
-                <p class="font-bold text-9xl text-slate-400">?</p>
+                <p class="font-bold text-9xl text-slate-400 text-center">?</p>
               )}
-            </div>
-            <div class="p-3 pl-6 grow flex w-full items-center justify-center">
-              <p
-                ref={(el) => {
-                  if (el) {
-                    mapRefs.current.set(i, el)
-                  } else {
-                    mapRefs.current.delete(i)
+              <div
+                class={`absolute px-3 py-2 inset-0 text-4xl leading-snug font-medium text-white`}
+                ref={(el) =>
+                  el
+                    ? winnerRefs.current.set(i, el)
+                    : winnerRefs.current.delete(i)
+                }
+              >
+                <p
+                  ref={(el) =>
+                    el
+                      ? winnerTextRefs.current.set(i, el)
+                      : winnerTextRefs.current.delete(i)
                   }
-                }}
+                ></p>
+              </div>
+            </div>
+            <div class="p-3 pl-6 grow flex w-full items-center justify-center text-center">
+              <p
+                ref={(el) =>
+                  el ? mapRefs.current.set(i, el) : mapRefs.current.delete(i)
+                }
                 class={getImg(game.map).length === 0 && "text-slate-500 italic"}
               ></p>
             </div>
           </div>
           <p
-            ref={(el) => {
-              if (el) {
-                modeRefs.current.set(i, el)
-              } else {
-                modeRefs.current.delete(i)
-              }
-            }}
+            ref={(el) =>
+              el ? modeRefs.current.set(i, el) : modeRefs.current.delete(i)
+            }
             class="p-3 pl-6 text-center"
           ></p>
         </div>
@@ -311,13 +354,11 @@ const Comm = () => {
         <>
           <div key={i + "t"}>
             <p
-              ref={(el) => {
-                if (el) {
-                  commTwitterRefs.current.set(i, el)
-                } else {
-                  commTwitterRefs.current.delete(i)
-                }
-              }}
+              ref={(el) =>
+                el
+                  ? commTwitterRefs.current.set(i, el)
+                  : commTwitterRefs.current.delete(i)
+              }
             ></p>
           </div>
           <div
@@ -328,11 +369,9 @@ const Comm = () => {
           >
             <p
               ref={(el) => {
-                if (el) {
-                  commPronounRefs.current.set(i, el)
-                } else {
-                  commPronounRefs.current.delete(i)
-                }
+                el
+                  ? commPronounRefs.current.set(i, el)
+                  : commPronounRefs.current.delete(i)
               }}
             ></p>
           </div>
