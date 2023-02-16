@@ -260,7 +260,7 @@ const Roster = () => {
           ref={panelRefA}
           class="rounded-lg w-full h-full justify-around bg-white p-6 flex flex-col gap-3"
         >
-          <RosterList roster={teams[0].data || []} />
+          <RosterList roster={teams[0].data || []} row="flex-row-reverse" />
         </div>
       </div>
       <div class="roster-panel self-center rounded-lg h-40 w-40 text-7xl flex items-center justify-center bg-otd-blue text-white font-bold">
@@ -278,10 +278,10 @@ const Roster = () => {
   )
 }
 
-const RosterList = ({ roster }) => (
+const RosterList = ({ roster, row = "flex-row" }) => (
   <>
     {roster.map((data) => (
-      <div class="flex items-center justify-between gap-6">
+      <div class={`flex items-center justify-between gap-6 ${row}`}>
         <p class="truncate">{data.name}</p>
         <div class="flex items-center gap-1.5 shrink-0">
           {data.weapons.map((w) => {
