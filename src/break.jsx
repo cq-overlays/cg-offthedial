@@ -1,6 +1,12 @@
 import render from "./render"
 import background from "./background.png"
-import { maps, measureText } from "./utils.js"
+import {
+  animateText,
+  logo,
+  maps,
+  measureText,
+  useAnimatedTextMap,
+} from "./utils.js"
 import {
   useCurrentBlock,
   useCurrentBreakScreen,
@@ -31,22 +37,14 @@ function App() {
       ],
       maplist: [
         [refs.current.get("screen-rest"), refs.current.get("screen-rest-maps")],
-        [
-          refs.current.get("scoreboard"),
-          ".maplist-game",
-          refs.current.get("icon"),
-        ],
+        [refs.current.get("scoreboard"), ".maplist-game"],
       ],
       rosters: [
         [
           refs.current.get("screen-rest"),
           refs.current.get("screen-rest-roster"),
         ],
-        [
-          refs.current.get("scoreboard"),
-          refs.current.get("roster"),
-          refs.current.get("icon"),
-        ],
+        [refs.current.get("scoreboard"), ".roster-panel"],
       ],
       all: [
         [
@@ -62,22 +60,22 @@ function App() {
           refs.current.get("social"),
           refs.current.get("scoreboard"),
           ".maplist-game",
-          refs.current.get("roster"),
-          refs.current.get("icon"),
+          ".roster-panel",
         ],
       ],
     }[screen])
 
   useEffect(() => {
-    const nowVisible = getVisible(breakScreen)
     const lastVisible = getVisible(lastScreen)
+    setLastScreen(breakScreen)
+    const nowVisible = getVisible(breakScreen)
+
     const shide = lastVisible[0].filter((x) => !nowVisible[0].includes(x))
     const sshow = nowVisible[0].filter((x) => !lastVisible[0].includes(x))
     const ahide = lastVisible[1].filter((x) => !nowVisible[1].includes(x))
     const ashow = nowVisible[1].filter((x) => !lastVisible[1].includes(x))
-    setLastScreen(breakScreen)
 
-    anime({
+    const a = anime({
       duration: 400,
       easing: "easeInOutExpo",
       delay: anime.stagger(60),
@@ -97,6 +95,14 @@ function App() {
         })
       },
     })
+    return () => {
+      if (!a.completed) {
+        a.pause()
+        a.seek(a.duration - 1)
+        shide.forEach((el) => (el.style.display = "none"))
+        sshow.forEach((el) => (el.style.display = ""))
+      }
+    }
   }, [breakScreen])
 
   return (
@@ -112,10 +118,7 @@ function App() {
           class="relative max-w-md w-full mb-24"
           ref={(el) => refs.current.set("img", el)}
         >
-          <img
-            src="https://assets.otd.ink/idtga/logo-nobg.svg"
-            style="absolute inset-0"
-          />
+          <img src={logo} style="absolute inset-0" />
         </div>
         <div ref={(el) => refs.current.set("flavor", el)}>
           <TextSquare>
@@ -147,18 +150,19 @@ function App() {
         class="flex flex-col items-center w-full gap-8 justify-between"
         ref={(el) => refs.current.set("screen-rest", el)}
       >
-        <div class="flex1" ref={(el) => refs.current.set("scoreboard", el)}>
+        <div ref={(el) => refs.current.set("scoreboard", el)}>
           <Scoreboard />
         </div>
         <div ref={(el) => refs.current.set("screen-rest-maps", el)}>
           <Maps />
         </div>
-        <div ref={(el) => refs.current.set("screen-rest-roster", el)}>
-          <div ref={(el) => refs.current.set("roster", el)}>
-            <Roster />
-          </div>
+        <div
+          class="w-full"
+          ref={(el) => refs.current.set("screen-rest-roster", el)}
+        >
+          <Roster />
         </div>
-        <div class="flex1" ref={(el) => refs.current.set("icon", el)}></div>
+        <div></div>
       </div>
     </div>
   )
@@ -173,30 +177,38 @@ const Scoreboard = () => {
   const [scores] = useCurrentScores()
 
   return (
-    <div class="rounded-md bg-otd-blue flex">
-      <div class="flex-1 w-full rounded-md flex items-center bg-otd-blue">
-        <FadeText animateWidth={false} text={teams[0].name} ref={teamA}>
-          <p
-            ref={teamA}
-            class="truncate rounded-md w-[17ch] text-right bg-white mb-2 px-3 py-2"
-          ></p>
-        </FadeText>
+    <div class="flex items-center">
+      <div class="rounded-md bg-otd-blue flex">
+        <div class="flex-1 w-full rounded-md flex items-center bg-otd-blue">
+          <FadeText animateWidth={false} text={teams[0].name} ref={teamA}>
+            <p
+              ref={teamA}
+              class="truncate rounded-md w-[17ch] text-right bg-white mb-2 px-3 py-2"
+            ></p>
+          </FadeText>
+        </div>
+        <div class="flex items-center text-white p-2 mb-1 gap-20">
+          <FadeText animateWidth={false} text={scores[0]} ref={scoreA}>
+            <p class="w-12 text-center" ref={scoreA}></p>
+          </FadeText>
+        </div>
       </div>
-      <div class="flex items-center text-white p-2 mb-1 gap-20">
-        <FadeText animateWidth={false} text={scores[0]} ref={scoreA}>
-          <p class="w-12 text-center" ref={scoreA}></p>
-        </FadeText>
-        <FadeText animateWidth={false} text={scores[1]} ref={scoreB}>
-          <p class="w-12 text-center" ref={scoreB}></p>
-        </FadeText>
-      </div>
-      <div class="flex-1 w-full rounded-md flex items-center bg-otd-blue">
-        <FadeText animateWidth={false} text={teams[1].name} ref={teamB}>
-          <p
-            ref={teamB}
-            class="truncate rounded-md w-[17ch] bg-white mb-2 px-3 py-2"
-          ></p>
-        </FadeText>
+      <img src={logo} class="h-32 mx-9" />
+
+      <div class="rounded-md bg-otd-blue flex">
+        <div class="flex items-center text-white p-2 mb-1 gap-20">
+          <FadeText animateWidth={false} text={scores[1]} ref={scoreB}>
+            <p class="w-12 text-center" ref={scoreB}></p>
+          </FadeText>
+        </div>
+        <div class="flex-1 w-full rounded-md flex items-center bg-otd-blue">
+          <FadeText animateWidth={false} text={teams[1].name} ref={teamB}>
+            <p
+              ref={teamB}
+              class="truncate rounded-md w-[17ch] bg-white mb-2 px-3 py-2"
+            ></p>
+          </FadeText>
+        </div>
       </div>
     </div>
   )
@@ -208,9 +220,84 @@ const getImg = (map) => {
     : ""
 }
 
-const Roster = () => {
-  return <div class="bg-white rounded-lg p-20"></div>
+const fadeRoster = (targets, complete) => {
+  anime
+    .timeline({
+      targets,
+      duration: 500,
+      easing: "easeInOutExpo",
+    })
+    .add({
+      opacity: 0,
+      complete,
+    })
+    .add({ opacity: 1 })
 }
+
+const Roster = () => {
+  const [rawTeams] = useCurrentTeams()
+  const [teams, setTeams] = useState(rawTeams)
+
+  const panelRefA = useRef()
+  const panelRefB = useRef()
+
+  useEffect(() => {
+    fadeRoster(panelRefA.current, () => {
+      setTeams(rawTeams)
+    })
+  }, [rawTeams[0]])
+
+  useEffect(() => {
+    fadeRoster(panelRefB.current, () => {
+      setTeams(rawTeams)
+    })
+  }, [rawTeams[1]])
+
+  return (
+    <div class="flex justify-evenly items-stretch gap-12">
+      <div class="roster-panel rounded-lg flex-1 bg-otd-blue pb-3 pr-3 mx-24">
+        <div
+          ref={panelRefA}
+          class="rounded-lg w-full h-full justify-around bg-white p-6 flex flex-col gap-3"
+        >
+          <RosterList roster={teams[0].data || []} />
+        </div>
+      </div>
+      <div class="roster-panel self-center rounded-lg h-40 w-40 text-7xl flex items-center justify-center bg-otd-blue text-white font-bold">
+        VS
+      </div>
+      <div class="roster-panel rounded-lg flex-1 bg-otd-blue pb-3 pr-3 mx-24">
+        <div
+          ref={panelRefB}
+          class="rounded-lg w-full h-full justify-around bg-white p-6 flex flex-col gap-3"
+        >
+          <RosterList roster={teams[1].data || []} />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const RosterList = ({ roster }) => (
+  <>
+    {roster.map((data) => (
+      <div class="flex items-center justify-between gap-6">
+        <p class="truncate">{data.name}</p>
+        <div class="flex items-center gap-1.5 shrink-0">
+          {data.weapons.map((w) => {
+            console.log(w)
+            return (
+              <img
+                class="h-14"
+                src={`https://raw.githubusercontent.com/Sendouc/sendou.ink/rewrite/public/static-assets/img/main-weapons-outlined/${w.id}.png`}
+              />
+            )
+          })}
+        </div>
+      </div>
+    ))}
+  </>
+)
 
 const Maps = () => {
   // round
@@ -382,34 +469,6 @@ const Comm = () => {
   )
 }
 
-const useAnimatedTextMap = (value, getters, animateWidth = true) => {
-  useEffect(() => {
-    value.forEach((v, i) =>
-      getters.forEach((getter) => {
-        const [text, current] = getter(v, i)
-        if (text !== current.innerText)
-          animateText(
-            current,
-            () => {
-              if (animateWidth) {
-                current.innerText = "."
-              } else {
-                current.innerText = text
-              }
-            },
-            animateWidth
-              ? (tl) =>
-                  tl.add({
-                    minWidth: measureText(text, current),
-                    complete: () => (current.innerText = text),
-                  })
-              : undefined
-          )
-      })
-    )
-  }, [value])
-}
-
 const Social = () => {
   const socials = [
     [
@@ -506,21 +565,6 @@ const FadeText = forwardRef(({ text, animateWidth = true, children }, ref) => {
 
   return children
 })
-
-const animateText = (targets, stageA, add) => {
-  let tl = anime
-    .timeline({
-      targets,
-      duration: 500,
-      easing: "easeInOutExpo",
-    })
-    .add({
-      opacity: 0,
-      complete: () => stageA(),
-    })
-  if (add) add(tl)
-  tl.add({ opacity: 1 })
-}
 
 const TextSquare = ({ icon, children }) => {
   return (
