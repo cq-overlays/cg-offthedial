@@ -30,7 +30,7 @@ jobs:
           repo: cq-overlays/dashboard
           version: ${{ env.DASHBOARD_VERSION }}
           file: cq-nodecg.zip
-      - run: unzip cg-nodecg.zip
+      - run: unzip cq-nodecg.zip
       - run: mkdir nodecg/bundles/${{ github.event.repository.name }}
       - run: cp -r graphics package.json LICENSE nodecg/bundles/${{ github.event.repository.name }}
       - run: zip -r ${{ github.event.repository.name }}-nodecg.zip nodecg/
