@@ -26,5 +26,5 @@ Contact me · [**@LeptoFlare**](https://github.com/LeptoFlare) · [lepto.tech](h
 _[https://github.com/LeptoFlare/cg-offthedial](https://github.com/LeptoFlare/cg-offthedial)_
 
 <!-- markdown links & imgs -->
-[stars-shield]: https://img.shields.io/github/stars/LeptoFlare/cg-offthedial.svg?style=social
-[license-shield]: https://img.shields.io/github/license/LeptoFlare/cg-offthedial.svg?style=flat
+[stars-shield]: https://img.shields.io/github/stars/cq-overlays/cg-offthedial.svg?style=social
+[license-shield]: https://img.shields.io/github/license/cq-overlays/cg-offthedial.svg?style=flat
