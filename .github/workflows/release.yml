@@ -6,7 +6,7 @@ on:
       - "*"
 
 env:
-  DASHBOARD_VERSION: latest # tags/v1.2.0
+  DASHBOARD_VERSION: tags/v1.2.0
 
 jobs:
   build:
