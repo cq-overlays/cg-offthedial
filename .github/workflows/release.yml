@@ -1,0 +1,40 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+env:
+  DASHBOARD_VERSION: latest # tags/v1.2.0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - run: npm i
+      - run: npm run build
+      - run: zip -r {{ github.event.repository.name }}.zip graphics package.json LICENSE
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          file: "{{ github.event.repository.name }}.zip"
+          overwrite: true
+
+      - uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          repo: cq-overlays/dashboard
+          version: ${{ env.DASHBOARD_VERSION }}
+          file: cq-nodecg.zip
+      - run: unzip cg-nodecg.zip
+      - run: mkdir nodecg/bundles/{{ github.event.repository.name }}
+      - run: cp -r graphics package.json LICENSE nodecg/bundles/{{ github.event.repository.name }}
+      - run: zip -r {{ github.event.repository.name }}-nodecg.zip nodecg/
+      - uses: svenstaro/upload-release-action@v2
+        with:
+          file: "{{ github.event.repository.name }}-nodecg.zip"
+          overwrite: true
