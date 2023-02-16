@@ -16,6 +16,7 @@ const cycle = [15, 45]
 function App() {
   const scoreRef = useRef()
   const commRef = useRef()
+  const cycleRef = useRef()
 
   const [screen] = useCurrentGameScreen()
 
@@ -28,13 +29,13 @@ function App() {
         duration: cycle[0] * 1000,
         changeComplete: () =>
           anime({
-            targets: commRef.current,
+            targets: cycleRef.current,
             easing: "easeInOutExpo",
             duration: 300,
             scale: 0.9,
             opacity: 0,
             complete: () => {
-              commRef.current.style.visibility = "hidden"
+              cycleRef.current.style.visibility = "hidden"
             },
           }),
       })
@@ -42,13 +43,13 @@ function App() {
         duration: cycle[1] * 1000,
         changeComplete: () =>
           anime({
-            targets: commRef.current,
+            targets: cycleRef.current,
             easing: "easeInOutExpo",
             duration: 300,
             scale: 1,
             opacity: 1,
             begin: () => {
-              commRef.current.style.visibility = "visible"
+              cycleRef.current.style.visibility = "visible"
             },
           }),
       })
@@ -79,20 +80,22 @@ function App() {
       >
         <Scoreboard />
       </div>
-      <div class="bg-otd-blue rounded-md flex items-center" ref={commRef}>
-        <div class="px-3 text-white mb-1">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            class="w-10 h-10"
-          >
-            <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
-            <path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
-          </svg>
-        </div>
-        <div class="rounded-md bg-white mb-2 px-3 py-2">
-          <Comm />
+      <div ref={commRef}>
+        <div class="bg-otd-blue rounded-md flex items-center" ref={cycleRef}>
+          <div class="px-3 text-white mb-1">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="w-10 h-10"
+            >
+              <path d="M8.25 4.5a3.75 3.75 0 117.5 0v8.25a3.75 3.75 0 11-7.5 0V4.5z" />
+              <path d="M6 10.5a.75.75 0 01.75.75v1.5a5.25 5.25 0 1010.5 0v-1.5a.75.75 0 011.5 0v1.5a6.751 6.751 0 01-6 6.709v2.291h3a.75.75 0 010 1.5h-7.5a.75.75 0 010-1.5h3v-2.291a6.751 6.751 0 01-6-6.709v-1.5A.75.75 0 016 10.5z" />
+            </svg>
+          </div>
+          <div class="rounded-md bg-white mb-2 px-3 py-2">
+            <Comm />
+          </div>
         </div>
       </div>
     </div>
