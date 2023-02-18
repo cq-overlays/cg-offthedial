@@ -5,8 +5,8 @@
 @tailwind utilities;
 
 @layer base {
-  html {
+  /* html {
     background-image: url("./render.jpg");
     @apply bg-cover bg-no-repeat;
-  }
+  } */
 }
