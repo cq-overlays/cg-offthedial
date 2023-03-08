@@ -24,6 +24,8 @@ export const maps = [
   "Wahoo World",
   "Flounder Heights",
   "Brinewater Springs",
+  "Manta Maria",
+  "Um'ami Ruins",
 ]
 
 export const animateText = (targets, stageA, add) => {
