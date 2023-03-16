@@ -67,6 +67,16 @@ export const useCurrentTeams = () =>
     },
   ])
 
+export const useLoadedData = () =>
+  useReplicant("cq-dashboard.loadedData", {
+    rounds: {},
+    teams: {},
+    blocks: {},
+    colors: [],
+    maps: [],
+    modes: [],
+  })
+
 export const useLastFmData = () =>
   useReplicant("cq-dashboard.lastFmData", {
     enabled: false,

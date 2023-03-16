@@ -9,25 +9,6 @@ import { useEffect } from "preact/hooks"
 
 export const logo = "https://assets.otd.ink/idtga/logo-nobg.svg"
 
-export const maps = [
-  "Scorch Gorge",
-  "Eeltail Alley",
-  "Hagglefish Market",
-  "Undertow Spillway",
-  "Mincemeat Metalworks",
-  "Hammerhead Bridge",
-  "Museum d'Alfonsino",
-  "Mahi-Mahi Resort",
-  "Inkblot Art Academy",
-  "Sturgeon Shipyard",
-  "MakoMart",
-  "Wahoo World",
-  "Flounder Heights",
-  "Brinewater Springs",
-  "Manta Maria",
-  "Um'ami Ruins",
-]
-
 export const animateText = (targets, stageA, add) => {
   let tl = anime
     .timeline({
