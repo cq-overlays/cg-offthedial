@@ -18,7 +18,7 @@ import { forwardRef } from "preact/compat"
 function App() {
   const [breakScreen] = useCurrentBreakScreen()
   const [lastScreen, setLastScreen] = useState("all")
-  const [loadedData] = useLoadedData()
+  const [{ maps }] = useLoadedData()
   const refs = useRef(new Map())
   const getVisible = (screen) =>
     ({
@@ -150,7 +150,7 @@ function App() {
           <Scoreboard />
         </div>
         <div ref={(el) => refs.current.set("screen-rest-maps", el)}>
-          <Maps loadedData={loadedData} />
+          <Maps maps={maps} />
         </div>
         <div
           class="w-full"
@@ -210,11 +210,9 @@ const Scoreboard = () => {
   )
 }
 
-const getImg = (loadedData, map) => {
-  return loadedData.maps.indexOf(map) - 1 >= 0
-    ? `https://sendou.ink/static-assets/img/stages/${
-        loadedData.maps.indexOf(map) - 1
-      }.png`
+const getImg = (maps, map) => {
+  return maps.indexOf(map) - 1 >= 0
+    ? `https://sendou.ink/static-assets/img/stages/${maps.indexOf(map) - 1}.png`
     : ""
 }
 
@@ -299,7 +297,7 @@ const RosterList = ({ roster, row = "flex-row" }) => (
   </>
 )
 
-const Maps = ({ loadedData }) => {
+const Maps = ({ maps }) => {
   // round
   const [round] = useCurrentRound()
   const [mapWinners] = useCurrentMapWinners()
@@ -370,10 +368,10 @@ const Maps = ({ loadedData }) => {
             <div
               class="relative overflow-hidden w-full h-96 rounded-t-lg bg-cover bg-center flex items-center justify-center bg-slate-800"
               style={{
-                backgroundImage: `url('${getImg(loadedData, game.map)}')`,
+                backgroundImage: `url('${getImg(maps, game.map)}')`,
               }}
             >
-              {getImg(loadedData, game.map).length === 0 && (
+              {getImg(maps, game.map).length === 0 && (
                 <p class="font-bold text-9xl text-slate-400 text-center">?</p>
               )}
               <div
@@ -399,8 +397,7 @@ const Maps = ({ loadedData }) => {
                   el ? mapRefs.current.set(i, el) : mapRefs.current.delete(i)
                 }
                 class={
-                  getImg(loadedData, game.map).length === 0 &&
-                  "text-slate-500 italic"
+                  getImg(maps, game.map).length === 0 && "text-slate-500 italic"
                 }
               ></p>
             </div>
