@@ -279,7 +279,7 @@ const RosterList = ({ roster, row = "flex-row" }) => (
     {roster.map((data) => (
       <div class={`flex items-center justify-between gap-6 ${row}`}>
         <p class="truncate">
-          {data.splashtag.substring(0, data.splashtag.length - 5)}
+          {data.splashtag.split("#")[0]}
         </p>
         <div class="flex items-center shrink-0">
           {data.weapons.map((w) => {
