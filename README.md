@@ -1,12 +1,8 @@
 # `cg-offthedial`
-> A NodeCG graphics bundle.
-
-![License][license-shield]
-![Stars][stars-shield]
+> A custom graphics bundle that I was commissioned for
 
 This is a NodeCG graphics bundle, make sure you have a working NodeCG installation.
 - This graphics bundle is controlled with [`cq-overlays/dashboard`](https://github.com/cq-overlays/dashboard).
-- This is a custom graphics bundle that I was commissioned for. If you'd like to commission your own, please see my [ko-fi](https://ko-fi.com/leptoflare) page.
 
 ## Installation
 1. Find the version you're looking for on the releases page, and download `cg-offthedial.zip`.
@@ -21,10 +17,4 @@ This is a NodeCG graphics bundle, make sure you have a working NodeCG installati
 
 ---
 
-Contact me · [**@LeptoFlare**](https://github.com/LeptoFlare) · [lepto.tech](https://lepto.tech)
-
-_[https://github.com/LeptoFlare/cg-offthedial](https://github.com/LeptoFlare/cg-offthedial)_
-
-<!-- markdown links & imgs -->
-[stars-shield]: https://img.shields.io/github/stars/cq-overlays/cg-offthedial.svg?style=social
-[license-shield]: https://img.shields.io/github/license/cq-overlays/cg-offthedial.svg?style=flat
+*empathy included • [**@cysabi**](https://github.com/cysabi) • [cysabi.github.io](https://cysabi.github.io)*
