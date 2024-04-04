@@ -1,6 +1,6 @@
 import render from "./render"
 import background from "./background.png"
-import { animateText, logo, measureText, useAnimatedTextMap } from "./utils.js"
+import { animateText, measureText, useAnimatedTextMap } from "./utils.js"
 import {
   useCurrentBlock,
   useCurrentBreakScreen,
@@ -14,6 +14,7 @@ import {
 import { useRef, useEffect, useState } from "preact/hooks"
 import anime from "animejs"
 import { forwardRef } from "preact/compat"
+import logo from "./logo.png"
 
 function App() {
   const [breakScreen] = useCurrentBreakScreen()
@@ -278,9 +279,7 @@ const RosterList = ({ roster, row = "flex-row" }) => (
   <>
     {roster.map((data) => (
       <div class={`flex items-center justify-between gap-6 ${row}`}>
-        <p class="truncate">
-          {data.splashtag.split("#")[0]}
-        </p>
+        <p class="truncate">{data.splashtag.split("#")[0]}</p>
         <div class="flex items-center shrink-0">
           {data.weapons.map((w) => {
             console.log(w)

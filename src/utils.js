@@ -7,8 +7,6 @@ import { useEffect } from "preact/hooks"
  * When adding new maps, please refer to it.
  */
 
-export const logo = "https://assets.otd.ink/idtga/logo-nobg.svg"
-
 export const animateText = (targets, stageA, add) => {
   let tl = anime
     .timeline({
